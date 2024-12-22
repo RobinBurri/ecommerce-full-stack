@@ -1,0 +1,56 @@
+services:
+  angular:
+    container_name: angular-dev
+    build:
+      context: ./front/
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./front/ecomFront:/app
+    ports:
+      - '4200:4200'
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  springboot:
+      container_name: springboot-dev
+      build:
+        context: ./back/
+        dockerfile: Dockerfile.dev
+      ports:
+        - '8080:8080'
+      volumes:
+        - ./back:/app
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-dev:5432/${POSTGRES_NAME}
+        - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+        - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      depends_on:
+        - postgres
+      networks:
+        - appnet
+
+  postgres:
+    container_name: postgres-dev
+    image: postgres:latest
+    ports:
+        - '5432:5432'
+    volumes:
+        - data:/var/lib/postgresql/data
+        - ./postgres-init:/docker-entrypoint-initdb.d
+    environment:
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        - POSTGRES_DB=${POSTGRES_NAME}
+    networks:
+        - appnet
+
+volumes:
+    data:
+      name: postgres-volume-dev
+
+networks:
+    appnet:
+
