@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { TestBtnComponent } from './test-btn/test-btn.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, TestBtnComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
